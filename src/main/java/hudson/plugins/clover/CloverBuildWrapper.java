@@ -7,6 +7,7 @@ import hudson.Proc;
 import hudson.FilePath;
 import hudson.Extension;
 import hudson.Util;
+import hudson.tasks.Publisher;
 import hudson.util.DescribableList;
 import hudson.remoting.Channel;
 import hudson.model.AbstractBuild;
@@ -29,6 +30,7 @@ import java.util.LinkedList;
 import java.util.Arrays;
 import java.util.ArrayList;
 
+import org.eclipse.hudson.api.model.IBaseBuildableProject;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.DataBoundConstructor;
 import net.sf.json.JSONObject;
@@ -61,11 +63,23 @@ public class CloverBuildWrapper extends BuildWrapper {
     }
 
     private void addCloverPublisher(AbstractBuild build, BuildListener listener) throws IOException {
-        DescribableList publishers = build.getProject().getPublishersList();
+        final AbstractProject project = build.getProject();
+        final DescribableList<Publisher, Descriptor<Publisher>> publishers = project.getPublishersList();
         if (!publishers.contains(CloverPublisher.DESCRIPTOR)) {
             final String reportDir = "clover";
             listener.getLogger().println("Adding Clover Publisher with reportDir: " + reportDir);
-            build.getProject().getPublishersList().add(new CloverPublisher(reportDir, null));
+
+            // note: cannot call getPublishersList().add() because it's not being stored back in the project
+            if (project instanceof IBaseBuildableProject) {
+                final IBaseBuildableProject buildableProject = (IBaseBuildableProject) project;
+                buildableProject.addPublisher(new CloverPublisher(reportDir, null));
+            }
+
+            // check if addition was successful
+            if (!build.getProject().getPublishersList().contains(CloverPublisher.DESCRIPTOR)) {
+                listener.getLogger().println("WARNING: Failed to add CloverPublisher to the project configuration. "
+                        + "You may need to configure Clover reports publishing manually.");
+            }
         }
     }
 
@@ -90,8 +104,7 @@ public class CloverBuildWrapper extends BuildWrapper {
                 historical(this.historical).
                 fullClean(true);
 
-        final Launcher outer = launcher;
-        return new CloverDecoratingLauncher(outer, options, license);
+        return new CloverDecoratingLauncher(launcher, options, license);
     }
 
     public static final Descriptor<BuildWrapper> DESCRIPTOR = new DescriptorImpl();

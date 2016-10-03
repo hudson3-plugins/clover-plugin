@@ -1,8 +1,12 @@
-target
-.classpath
-.settings
-.project
-*.iml
-*.ipr
-*.iws
-work
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+work/**
+target/**
+*iml
+*ipr
+.idea/

@@ -8,7 +8,7 @@
     <groupId>org.hudsonci.plugins</groupId>
     <artifactId>clover</artifactId>
     <packaging>hpi</packaging>
-    <version>4.6.1</version>
+    <version>4.6.2-SNAPSHOT</version>
     <name>Clover plugin</name>
     <url>http://wiki.hudson-ci.org/display/HUDSON/Clover+Plugin</url>
     <developers>
@@ -30,7 +30,7 @@
         <connection>scm:git:git://github.com/hudson3-plugins/clover-plugin.git</connection>
         <developerConnection>scm:git:git@github.com:hudson3-plugins/clover-plugin.git</developerConnection>
         <url>http://github.com/hudson3-plugins/clover-plugin</url>
-        <tag>clover-4.6.1</tag>
+        <tag>HEAD</tag>
     </scm>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

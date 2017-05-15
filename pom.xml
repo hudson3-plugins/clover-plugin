@@ -8,22 +8,22 @@
     <groupId>org.hudsonci.plugins</groupId>
     <artifactId>clover</artifactId>
     <packaging>hpi</packaging>
-    <version>4.5.1-SNAPSHOT</version>
-    <name>Clover plugin</name>
+    <version>4.6.0-SNAPSHOT</version>
+    <name>Hudson Clover Plugin</name>
+    <description></description>
     <url>http://wiki.hudson-ci.org/display/HUDSON/Clover+Plugin</url>
+    <licenses>
+        <license>
+            <name>Apache License 2.0</name>
+            <distribution>repo</distribution>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
     <developers>
         <developer>
-            <id>mparfianowicz</id>
+            <id>marek-parfianowicz</id>
             <name>Marek Parfianowicz</name>
-            <email>mparfianowicz@atlassian.com</email>
-        </developer>
-        <developer>
-            <id>npellow</id>
-            <name>Nick Pellow</name>
-        </developer>
-        <developer>
-            <id>olamy</id>
-            <name>Olivier Lamy</name>
+            <email>marek.parfianowicz@gmail.com</email>
         </developer>
     </developers>
     <scm>
@@ -37,9 +37,9 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>com.atlassian.clover</groupId>
+            <groupId>org.openclover</groupId>
             <artifactId>clover</artifactId>
-            <version>4.1.1</version>
+            <version>4.2.0</version>
         </dependency>
         <dependency>
             <groupId>org.hudsonci.plugins</groupId>

@@ -6,7 +6,6 @@ import hudson.Launcher;
 import hudson.Proc;
 import hudson.FilePath;
 import hudson.Extension;
-import hudson.Util;
 import hudson.tasks.Publisher;
 import hudson.util.DescribableList;
 import hudson.remoting.Channel;
@@ -22,7 +21,6 @@ import hudson.model.Action;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 import java.util.List;
@@ -47,14 +45,12 @@ public class CloverBuildWrapper extends BuildWrapper {
 
     public boolean historical = true;
     public boolean json = true;
-    public String licenseCert;
     public boolean putValuesInQuotes;
 
     @DataBoundConstructor
-    public CloverBuildWrapper(boolean historical, boolean json, String licenseCert, boolean putValuesInQuotes) {
+    public CloverBuildWrapper(boolean historical, boolean json, boolean putValuesInQuotes) {
         this.historical = historical;
         this.json = json;
-        this.licenseCert = licenseCert;
         this.putValuesInQuotes = putValuesInQuotes;
     }
 
@@ -100,14 +96,13 @@ public class CloverBuildWrapper extends BuildWrapper {
 
         final DescriptorImpl descriptor = Hudson.getInstance().getDescriptorByType(DescriptorImpl.class);
 
-        final String license = Util.nullify(licenseCert) == null ? descriptor.licenseCert : licenseCert;
         final CIOptions.Builder options = new CIOptions.Builder()
                 .json(this.json)
                 .historical(this.historical)
                 .fullClean(true)
                 .putValuesInQuotes(this.putValuesInQuotes);
 
-        return new CloverDecoratingLauncher(launcher, options, license);
+        return new CloverDecoratingLauncher(launcher, options);
     }
 
     public static final Descriptor<BuildWrapper> DESCRIPTOR = new DescriptorImpl();
@@ -123,8 +118,6 @@ public class CloverBuildWrapper extends BuildWrapper {
      */
     @Extension
     public static final class DescriptorImpl extends BuildWrapperDescriptor {
-
-        public String licenseCert;
 
         public DescriptorImpl() {
             super(CloverBuildWrapper.class);
@@ -164,13 +157,11 @@ public class CloverBuildWrapper extends BuildWrapper {
     public static class CloverDecoratingLauncher extends Launcher {
         private final Launcher outer;
         private final CIOptions.Builder options;
-        private final String license;
 
-        public CloverDecoratingLauncher(Launcher outer, CIOptions.Builder options, String license) {
+        public CloverDecoratingLauncher(Launcher outer, CIOptions.Builder options) {
             super(outer);
             this.outer = outer;
             this.options = options;
-            this.license = license;
         }
 
         @Override
@@ -238,8 +229,6 @@ public class CloverBuildWrapper extends BuildWrapper {
                 // TODO: full clean needs to be an option. see http://jira.atlassian.com/browse/CLOV-736
                 options.fullClean(true);
 
-                setupLicense(starter);
-
                 Integrator integrator = Integrator.Factory.newAntIntegrator(options.build());
                 
                 integrator.decorateArguments(userArgs);
@@ -258,25 +247,6 @@ public class CloverBuildWrapper extends BuildWrapper {
                     masks[i] = starter.masks()[i];
                 }
                 starter.masks(masks);
-            }
-        }
-
-        private void setupLicense(ProcStarter starter) throws IOException {
-
-            if (license == null) {
-                listener.getLogger().println("No Clover license configured. Please download a free 30 day license from http://my.atlassian.com.");
-                return;
-            }
-
-            // create a tmp license file.
-            FilePath licenseFile = new FilePath(starter.pwd(), ".clover/clover.license");
-            try {
-                licenseFile.write(license, "UTF-8");
-                options.license(new File(licenseFile.toURI()));
-            } catch (InterruptedException e) {
-                listener.getLogger().print("Could not create license file at: " + licenseFile + ". Setting as a system property.");
-                listener.getLogger().print(e.getMessage());
-                options.licenseCert(license);
             }
         }
 

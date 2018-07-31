@@ -1,6 +1,5 @@
 package hudson.plugins.clover;
 
-import junit.framework.TestCase;
 import hudson.util.LogTaskListener;
 import hudson.Launcher;
 import hudson.Proc;
@@ -14,12 +13,15 @@ import java.util.Map;
 import java.io.OutputStream;
 
 import com.atlassian.clover.api.ci.CIOptions;
+import org.junit.Test;
 
-public class CloverBuildWrapperTest extends TestCase
-{
+import static org.junit.Assert.assertEquals;
 
-    public void testDecoratinLauncher() {
-        TaskListener listener = new LogTaskListener(Logger.getLogger(getName()), Level.ALL);
+public class CloverBuildWrapperTest {
+
+    @Test
+    public void testDecoratingLauncher() {
+        TaskListener listener = new LogTaskListener(Logger.getLogger("testDecoratingLauncher"), Level.ALL);
         Launcher outer = new Launcher.LocalLauncher(listener);
         CIOptions.Builder options = new CIOptions.Builder(); 
         CloverBuildWrapper.CloverDecoratingLauncher cloverLauncher = new CloverBuildWrapper.CloverDecoratingLauncher(outer, options);

@@ -12,11 +12,10 @@ import org.kohsuke.stapler.StaplerResponse;
 
 /**
  * Clover Coverage results for the entire project.
- * @author Stephen Connolly
  */
 public class ProjectCoverage extends AbstractPackageAggregatedMetrics {
 
-    private List<PackageCoverage> packageCoverages = new ArrayList<PackageCoverage>();
+    private List<PackageCoverage> packageCoverages = new ArrayList<>();
 
     public boolean addPackageCoverage(PackageCoverage result) {
         return packageCoverages.add(result);
@@ -56,7 +55,7 @@ public class ProjectCoverage extends AbstractPackageAggregatedMetrics {
         return null;
     }
 
-    public PackageCoverage getDynamic(String token, StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public PackageCoverage getDynamic(String token, StaplerRequest req, StaplerResponse rsp) {
         return findPackageCoverage(token);
     }
 
@@ -70,7 +69,7 @@ public class ProjectCoverage extends AbstractPackageAggregatedMetrics {
 
     @Override
     public void setOwner(AbstractBuild owner) {
-        super.setOwner(owner);    //To change body of overridden methods use File | Settings | File Templates.
+        super.setOwner(owner);
         for (PackageCoverage p: packageCoverages) {
             p.setOwner(owner);
         }

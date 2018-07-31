@@ -24,13 +24,9 @@ import org.jvnet.localizer.Localizable;
 
 /**
  * A health reporter for the individual build page.
- *
- *
- * @author connollys
- * @since 03-Jul-2007 08:43:08
  */
 public class CloverBuildAction extends AbstractPackageAggregatedMetrics implements HealthReportingAction, StaplerProxy {
-    public final AbstractBuild owner;
+    private final AbstractBuild owner;
     private String buildBaseDir;
     private CoverageTarget healthyTarget;
     private CoverageTarget unhealthyTarget;
@@ -54,7 +50,7 @@ public class CloverBuildAction extends AbstractPackageAggregatedMetrics implemen
         }
         if (minKey == null) return null;
 
-        Localizable description = null;
+        Localizable description;
         switch (minKey) {
             case METHOD:
                 description = Messages._CloverBuildAction_MethodCoverage(
@@ -103,8 +99,7 @@ public class CloverBuildAction extends AbstractPackageAggregatedMetrics implemen
     }
 
     /** Gets the previous {@link CloverBuildAction} of the given build. */
-    /*package*/
-    static CloverBuildAction getPreviousResult(AbstractBuild start) {
+    private static CloverBuildAction getPreviousResult(AbstractBuild start) {
         AbstractBuild<?, ?> b = start;
         while (true) {
             b = b.getPreviousBuild();
@@ -121,7 +116,7 @@ public class CloverBuildAction extends AbstractPackageAggregatedMetrics implemen
     CloverBuildAction(AbstractBuild owner, String workspacePath, ProjectCoverage r, CoverageTarget healthyTarget,
                       CoverageTarget unhealthyTarget) {
         this.owner = owner;
-        this.report = new WeakReference<ProjectCoverage>(r);
+        this.report = new WeakReference<>(r);
         this.buildBaseDir = workspacePath;
         if (this.buildBaseDir == null) {
             this.buildBaseDir = File.separator;
@@ -134,7 +129,7 @@ public class CloverBuildAction extends AbstractPackageAggregatedMetrics implemen
     }
 
     
-    /** Obtains the detailed {@link CoverageReport} instance. */
+    /** Obtains the detailed coverage instance. */
     public synchronized ProjectCoverage getResult() {
         if (report != null) {
             ProjectCoverage r = report.get();
@@ -148,7 +143,7 @@ public class CloverBuildAction extends AbstractPackageAggregatedMetrics implemen
 
             r.setOwner(owner);
 
-            report = new WeakReference<ProjectCoverage>(r);
+            report = new WeakReference<>(r);
             return r;
         } catch (IOException e) {
             logger.log(Level.WARNING, "Failed to load " + reportFile, e);

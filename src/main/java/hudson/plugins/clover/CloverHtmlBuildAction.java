@@ -1,6 +1,5 @@
 package hudson.plugins.clover;
 
-
 import hudson.model.DirectoryBrowserSupport;
 import hudson.model.Action;
 import hudson.FilePath;
@@ -11,11 +10,9 @@ import javax.servlet.ServletException;
 import java.io.IOException;
 
 
-/**
- */
 public class CloverHtmlBuildAction implements Action {
 
-    final FilePath buildReportPath; // location of the clover html for each build
+    private final FilePath buildReportPath; // location of the clover html for each build
 
     public CloverHtmlBuildAction(FilePath buildReportPath) {
         this.buildReportPath = buildReportPath;

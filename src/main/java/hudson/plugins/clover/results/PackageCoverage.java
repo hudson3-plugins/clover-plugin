@@ -3,7 +3,6 @@ package hudson.plugins.clover.results;
 import hudson.model.AbstractBuild;
 import hudson.plugins.clover.CloverBuildAction;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,11 +11,10 @@ import org.kohsuke.stapler.StaplerResponse;
 
 /**
  * Clover Coverage results for a specific package.
- * @author Stephen Connolly
  */
 public class PackageCoverage extends AbstractFileAggregatedMetrics {
 
-    private List<FileCoverage> fileCoverages = new ArrayList<FileCoverage>();
+    private List<FileCoverage> fileCoverages = new ArrayList<>();
 
     public List<FileCoverage> getChildren() {
         return getFileCoverages();
@@ -45,7 +43,7 @@ public class PackageCoverage extends AbstractFileAggregatedMetrics {
         return null;
     }
 
-    public Object getDynamic(String token, StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public Object getDynamic(String token, StaplerRequest req, StaplerResponse rsp) {
         boolean isPath = false;
         for (FileCoverage i : fileCoverages) {
             if (i.getName().equals(token)) return i;
@@ -69,7 +67,7 @@ public class PackageCoverage extends AbstractFileAggregatedMetrics {
     }
 
     public void setOwner(AbstractBuild owner) {
-        super.setOwner(owner);    //To change body of overridden methods use File | Settings | File Templates.
+        super.setOwner(owner);
         for (FileCoverage fileCoverage : fileCoverages) {
             fileCoverage.setOwner(owner);
         }
@@ -78,11 +76,11 @@ public class PackageCoverage extends AbstractFileAggregatedMetrics {
     public class FilePathMapper {
         private final String pathSoFar;
 
-        public FilePathMapper(String pathSoFar) {
+        FilePathMapper(String pathSoFar) {
             this.pathSoFar = pathSoFar;
         }
 
-        public Object getDynamic(String token, StaplerRequest req, StaplerResponse rsp) throws IOException {
+        public Object getDynamic(String token, StaplerRequest req, StaplerResponse rsp) {
             final String testPath = pathSoFar + token;
             boolean isPath = false;
             for (FileCoverage i : fileCoverages) {

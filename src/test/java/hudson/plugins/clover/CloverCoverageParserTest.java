@@ -6,13 +6,8 @@ import junit.framework.TestCase;
 import hudson.plugins.clover.results.ProjectCoverage;
 import hudson.plugins.clover.results.PackageCoverage;
 
-import java.io.File;
-
 /**
  * CloverCoverageParser Tester.
- *
- * @author Stephen Connolly
- * @version 1.0
  */
 public class CloverCoverageParserTest extends TestCase {
     public CloverCoverageParserTest(String name) {

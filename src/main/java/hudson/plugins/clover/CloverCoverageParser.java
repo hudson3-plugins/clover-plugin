@@ -14,20 +14,13 @@ import org.apache.commons.digester.Digester;
 import org.xml.sax.SAXException;
 
 
-
-/**
- * Created by IntelliJ IDEA.
- *
- * @author connollys
- * @since 03-Jul-2007 09:03:30
- */
 public class CloverCoverageParser {
 
     /** Do not instantiate CloverCoverageParser. */
     private CloverCoverageParser() {
     }
 
-    public static ProjectCoverage trimPaths(ProjectCoverage result, String pathPrefix) {
+    static ProjectCoverage trimPaths(ProjectCoverage result, String pathPrefix) {
         if (result == null) throw new NullPointerException();
         if (pathPrefix == null) return result;
         for (PackageCoverage p: result.getPackageCoverages()) {
@@ -44,26 +37,14 @@ public class CloverCoverageParser {
         return result;
     }
 
-    public static ProjectCoverage parse(File inFile, String pathPrefix) throws IOException {
-        FileInputStream fileInputStream = null;
-        BufferedInputStream bufferedInputStream = null;
-        try {
-            fileInputStream = new FileInputStream(inFile);
-            bufferedInputStream = new BufferedInputStream(fileInputStream);
-            CloverCoverageParser parser = new CloverCoverageParser();
+    static ProjectCoverage parse(File inFile, String pathPrefix) throws IOException {
+        try (FileInputStream fileInputStream = new FileInputStream(inFile);
+             BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream)) {
             return trimPaths(parse(bufferedInputStream), pathPrefix);
-        } finally {
-            try {
-                if (bufferedInputStream != null)
-                    bufferedInputStream.close();
-                if (fileInputStream != null)
-                    fileInputStream.close();
-            } catch (IOException e) {
-            }
         }
     }
 
-    public static ProjectCoverage parse(InputStream in) throws IOException {
+    static ProjectCoverage parse(InputStream in) throws IOException {
         if (in == null) throw new NullPointerException();
         Digester digester = new Digester();
         digester.setClassLoader(CloverCoverageParser.class.getClassLoader());

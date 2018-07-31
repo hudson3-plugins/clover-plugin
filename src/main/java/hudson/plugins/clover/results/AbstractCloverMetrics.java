@@ -30,10 +30,8 @@ import org.jfree.ui.RectangleInsets;
 
 /**
  * Abstract Clover Coverage results.
- * @author Stephen Connolly
  */
 abstract public class AbstractCloverMetrics {
-
 
     private String name;
 
@@ -266,7 +264,7 @@ abstract public class AbstractCloverMetrics {
             @Override
             protected DataSetBuilder<String, NumberOnlyBuildLabel> createDataSet(AbstractCloverMetrics metrics) {
                 DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dsb
-                        = new DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel>();
+                        = new DataSetBuilder<>();
                 for (AbstractCloverMetrics m = metrics; m != null; m = m.getPreviousResult()) {
                     ChartUtil.NumberOnlyBuildLabel label = new ChartUtil.NumberOnlyBuildLabel(m.getOwner());
                     dsb.add(m.getMethodCoverage().getPercentageFloat(), Messages.AbstractCloverMetrics_Label_method(), label);

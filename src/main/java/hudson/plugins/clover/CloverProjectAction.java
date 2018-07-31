@@ -1,26 +1,22 @@
 package hudson.plugins.clover;
 
 import hudson.FilePath;
+import hudson.model.Actionable;
+import hudson.model.Build;
+import hudson.model.DirectoryBrowserSupport;
 import hudson.model.Project;
 import hudson.model.ProminentProjectAction;
-import hudson.model.Build;
 import hudson.model.Result;
-import hudson.model.DirectoryBrowserSupport;
-import hudson.model.Actionable;
 import hudson.util.Graph;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
-import javax.servlet.ServletException;
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Project level action.
  *
  * TODO: refactor this action in a similar manner to JavadocArchiver and BaseJavadocAction etc to avoid duplication.
- *
- * @author Stephen Connolly
  */
 public class CloverProjectAction extends Actionable implements ProminentProjectAction {
 
@@ -50,8 +46,7 @@ public class CloverProjectAction extends Actionable implements ProminentProjectA
             // no clover report links, until there is at least one build
             return null;
         }
-        final File reportDir = project.getLastBuild().getRootDir();
-        return reportDir;
+        return project.getLastBuild().getRootDir();
     }
 
     public String getDisplayName() {
@@ -94,14 +89,11 @@ public class CloverProjectAction extends Actionable implements ProminentProjectA
         return null;
     }
 
-    public DirectoryBrowserSupport doDynamic(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException,
-            InterruptedException {
-
+    public DirectoryBrowserSupport doDynamic(StaplerRequest req, StaplerResponse rsp) {
         // there is a report if there was a build already, and there is a report
         if (project.getLastBuild() != null && getDisplayName() != null) {
             return new DirectoryBrowserSupport(this,
                     new FilePath(project.getLastBuild().getRootDir()),"Clover Html Report",  "/clover/clover.gif", false);
-
         } else {
             return null;
         }        

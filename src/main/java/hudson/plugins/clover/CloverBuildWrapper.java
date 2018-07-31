@@ -14,7 +14,6 @@ import hudson.model.BuildListener;
 import hudson.model.Run;
 import hudson.model.Descriptor;
 import hudson.model.AbstractProject;
-import hudson.model.Hudson;
 import hudson.model.Project;
 import hudson.model.FreeStyleProject;
 import hudson.model.Action;
@@ -43,8 +42,8 @@ import java.util.Collections;
 public class CloverBuildWrapper extends BuildWrapper {
 
 
-    public boolean historical = true;
-    public boolean json = true;
+    public boolean historical;
+    public boolean json;
     public boolean putValuesInQuotes;
 
     @DataBoundConstructor
@@ -55,7 +54,7 @@ public class CloverBuildWrapper extends BuildWrapper {
     }
 
     @Override
-    public Environment setUp(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException, InterruptedException {
+    public Environment setUp(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException {
         addCloverPublisher(build, listener);
         return new Environment() {};
     }
@@ -91,11 +90,7 @@ public class CloverBuildWrapper extends BuildWrapper {
     }
 
     @Override
-    public Launcher decorateLauncher(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException, InterruptedException, Run.RunnerAbortedException {
-
-
-        final DescriptorImpl descriptor = Hudson.getInstance().getDescriptorByType(DescriptorImpl.class);
-
+    public Launcher decorateLauncher(AbstractBuild build, Launcher launcher, BuildListener listener) throws Run.RunnerAbortedException {
         final CIOptions.Builder options = new CIOptions.Builder()
                 .json(this.json)
                 .historical(this.historical)
@@ -111,8 +106,6 @@ public class CloverBuildWrapper extends BuildWrapper {
     /**
      * Descriptor for {@link CloverPublisher}. Used as a singleton. The class is marked as public so that it can be
      * accessed from views.
-     * <p/>
-     * <p/>
      * See <tt>views/hudson/plugins/clover/CloverPublisher/*.jelly</tt> for the actual HTML fragment for the
      * configuration screen.
      */
@@ -138,7 +131,7 @@ public class CloverBuildWrapper extends BuildWrapper {
 
 
         @Override
-        public boolean configure(StaplerRequest req, JSONObject json) throws FormException {
+        public boolean configure(StaplerRequest req, JSONObject json) {
             req.bindParameters(this, "clover.");
             save();
             return true;
@@ -158,7 +151,7 @@ public class CloverBuildWrapper extends BuildWrapper {
         private final Launcher outer;
         private final CIOptions.Builder options;
 
-        public CloverDecoratingLauncher(Launcher outer, CIOptions.Builder options) {
+        CloverDecoratingLauncher(Launcher outer, CIOptions.Builder options) {
             super(outer);
             this.outer = outer;
             this.options = options;
@@ -171,13 +164,13 @@ public class CloverBuildWrapper extends BuildWrapper {
             return outer.launch(starter);
         }
 
-        public void decorateArgs(ProcStarter starter) throws IOException {
+        public void decorateArgs(ProcStarter starter) {
 
-            List<String> userArgs = new LinkedList<String>();
-            List<String> preSystemArgs = new LinkedList<String>();
-            List<String> postSystemArgs = new LinkedList<String>();
+            List<String> userArgs = new LinkedList<>();
+            List<String> preSystemArgs = new LinkedList<>();
+            List<String> postSystemArgs = new LinkedList<>();
 
-            final List<String>  cmds = new ArrayList<String>();
+            final List<String>  cmds = new ArrayList<>();
             cmds.addAll(starter.cmds());
 
             // on windows - the cmds are wrapped of the form:
@@ -235,7 +228,7 @@ public class CloverBuildWrapper extends BuildWrapper {
                 starter.cmds(new ArrayList<String>());
 
                 // re-assemble all commands
-                List<String> allCommands = new ArrayList<String>();
+                List<String> allCommands = new ArrayList<>();
                 allCommands.addAll(preSystemArgs);
                 allCommands.addAll(userArgs);
                 allCommands.addAll(postSystemArgs);

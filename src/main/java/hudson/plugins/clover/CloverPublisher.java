@@ -31,8 +31,6 @@ import org.kohsuke.stapler.StaplerRequest;
 
 /**
  * Clover {@link Publisher}.
- *
- * @author Stephen Connolly
  */
 public class CloverPublisher extends Recorder {
 
@@ -44,8 +42,6 @@ public class CloverPublisher extends Recorder {
     private CoverageTarget failingTarget;
 
     /**
-     * @param cloverReportDir
-     * @param cloverReportFileName
      * @stapler-constructor
      */
     @DataBoundConstructor
@@ -154,7 +150,7 @@ public class CloverPublisher extends Recorder {
             }
 
             final boolean htmlExists = copyHtmlReport(coverageReportDir, buildTarget, listener);
-            final boolean xmlExists = copyXmlReport(coverageReportDir, buildTarget, listener);
+            copyXmlReport(coverageReportDir, buildTarget, listener);
 
             if (htmlExists) {
                 // only add the HTML build action, if the HTML report is available
@@ -174,13 +170,12 @@ public class CloverPublisher extends Recorder {
 
     /**
      * Process the clover.xml from the build directory. The clover.xml must have been already copied to the build dir.
-     *
      */
     private void processCloverXml(AbstractBuild<?, ?> build, BuildListener listener, FilePath coverageReport, FilePath buildTarget) throws InterruptedException {
         String workspacePath = "";
         try {
             workspacePath = build.getWorkspace().act(new FilePath.FileCallable<String>() {
-                public String invoke(File file, VirtualChannel virtualChannel) throws IOException {
+                public String invoke(File file, VirtualChannel virtualChannel) {
                     try {
                         return file.getCanonicalPath();
                     } catch (IOException e) {
@@ -189,6 +184,7 @@ public class CloverPublisher extends Recorder {
                 }
             });
         } catch (IOException e) {
+            listener.getLogger().print("Failed to determine a workspace path: " + e.getMessage());
         }
         if (!workspacePath.endsWith(File.separator)) {
             workspacePath += File.separator;
@@ -219,7 +215,7 @@ public class CloverPublisher extends Recorder {
             }
 
         } else {
-            flagMissingCloverXml(listener, build);
+            flagMissingCloverXml(listener);
         }
     }
 
@@ -259,8 +255,6 @@ public class CloverPublisher extends Recorder {
      * @param startDir the dir to start searching in
      * @param filename the filename to search for
      * @return the path of filename
-     * @throws IOException
-     * @throws InterruptedException
      */
     private FilePath findOneDirDeep(final FilePath startDir, final String filename) throws IOException, InterruptedException {
 
@@ -280,8 +274,9 @@ public class CloverPublisher extends Recorder {
         return dirContainingFile.child(filename);
     }
 
-    private void flagMissingCloverXml(BuildListener listener, AbstractBuild<?, ?> build) {
-        listener.getLogger().println("Could not find '" + cloverReportDir + "/" + getCloverReportFileName() + "'.  Did you generate " +
+    private void flagMissingCloverXml(BuildListener listener) {
+        listener.getLogger().println("Could not find '" + cloverReportDir + "/"
+                + getCloverReportFileName() + "'.  Did you generate " +
                 "the XML report for Clover?");
     }
 
@@ -310,8 +305,6 @@ public class CloverPublisher extends Recorder {
     /**
      * Descriptor for {@link CloverPublisher}. Used as a singleton. The class is marked as public so that it can be
      * accessed from views.
-     * <p/>
-     * <p/>
      * See <tt>views/hudson/plugins/clover/CloverPublisher/*.jelly</tt> for the actual HTML fragment for the
      * configuration screen.
      */
@@ -339,7 +332,7 @@ public class CloverPublisher extends Recorder {
          * Creates a new instance of {@link CloverPublisher} from a submitted form.
          */
         @Override
-        public CloverPublisher newInstance(StaplerRequest req, JSONObject formData) throws FormException {
+        public CloverPublisher newInstance(StaplerRequest req, JSONObject formData) {
             CloverPublisher instance = req.bindParameters(CloverPublisher.class, "clover.");
             req.bindParameters(instance.failingTarget, "cloverFailingTarget.");
             req.bindParameters(instance.healthyTarget, "cloverHealthyTarget.");

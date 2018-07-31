@@ -6,15 +6,13 @@ import java.util.Locale;
 
 /**
  * Represents <tt>x/y</tt> where x={@link #numerator} and y={@link #denominator}.
- *
- * @author Kohsuke Kawaguchi
  */
 final public class Ratio implements Serializable, CoverageBarProvider {
     
-    public final float numerator;
-    public final float denominator;
+    final float numerator;
+    final float denominator;
 
-    public static final NumberFormat PC_WIDTH_FORMAT = NumberFormat.getInstance(Locale.US);
+    private static final NumberFormat PC_WIDTH_FORMAT = NumberFormat.getInstance(Locale.US);
     static {
         PC_WIDTH_FORMAT.setMaximumFractionDigits(1);
     }

@@ -3,7 +3,6 @@ package hudson.plugins.clover.results;
 import hudson.model.AbstractBuild;
 import hudson.plugins.clover.CloverBuildAction;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,17 +11,16 @@ import org.kohsuke.stapler.StaplerResponse;
 
 /**
  * Clover Coverage results for a specific file.
- * @author Stephen Connolly
  */
 public class FileCoverage extends AbstractClassAggregatedMetrics {
 
-    private List<ClassCoverage> classCoverages = new ArrayList<ClassCoverage>();
+    private List<ClassCoverage> classCoverages = new ArrayList<>();
 
     public List<ClassCoverage> getChildren() {
         return getClassCoverages();
     }
 
-    public ClassCoverage getDynamic(String token, StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public ClassCoverage getDynamic(String token, StaplerRequest req, StaplerResponse rsp) {
         return findClassCoverage(token);
     }
 
@@ -50,7 +48,7 @@ public class FileCoverage extends AbstractClassAggregatedMetrics {
     }
 
     public void setOwner(AbstractBuild owner) {
-        super.setOwner(owner);    //To change body of overridden methods use File | Settings | File Templates.
+        super.setOwner(owner);
         for (ClassCoverage classCoverage : classCoverages) {
             classCoverage.setOwner(owner);
         }

@@ -5,12 +5,10 @@ public abstract class AbstractPackageAggregatedMetrics extends AbstractFileAggre
 
     public abstract PackageCoverage findPackageCoverage(String name);
 
-    /** {@inheritDoc} */
     public int getPackages() {
         return packages;
     }
 
-    /** {@inheritDoc} */
     public void setPackages(int packages) {
         this.packages = packages;
     }

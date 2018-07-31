@@ -81,7 +81,18 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.0.1</version>
                 <configuration>
+                    <additionalOptions>
+                        <!-- don't fail on missing @param or @return -->
+                        <additionalOption>-Xdoclint:all,-missing</additionalOption>
+                    </additionalOptions>
                     <quiet>true</quiet>
+                    <tags>
+                        <tag>
+                            <!-- don't fail on @stapler-constructor tag -->
+                            <name>stapler</name>
+                            <placement>X</placement>
+                        </tag>
+                    </tags>
                 </configuration>
                 <executions>
                     <execution>

@@ -8,7 +8,7 @@
     <groupId>org.hudsonci.plugins</groupId>
     <artifactId>clover</artifactId>
     <packaging>hpi</packaging>
-    <version>4.8.0-SNAPSHOT</version>
+    <version>4.8.1-SNAPSHOT</version>
     <name>Clover plugin</name>
     <url>http://wiki.hudson-ci.org/display/HUDSON/Clover+Plugin</url>
     <licenses>
